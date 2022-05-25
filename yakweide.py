@@ -7,7 +7,6 @@ DISCORD_TOKEN = 'Njc4MDEyOTMxMDg1OTU5MTk0.Gb3Vb9.Buy4uSdDUt2fSXGVOzDKogzefwmdNa1
 GUILD_ID = 817139732026228767
 LOG_CHANNEL_ID = 979135868910592071
 
-
 # Create bot
 client = commands.Bot(command_prefix='!')
 
@@ -17,46 +16,49 @@ client = commands.Bot(command_prefix='!')
 async def on_ready():
     print('Connected to bot: {}'.format(client.user.name))
     print('Bot ID: {}'.format(client.user.id))
-    await successLogin()
+    channel = client.get_channel(LOG_CHANNEL_ID)
+    await channel.send('I´m ready')
+    print('I´m ready')
 
 
-# sets both guild and log channel, also fetches the two most recent move and disconnect logs
-async def successLogin():
+
+
+async def printLog(limit):
     channel = client.get_channel(LOG_CHANNEL_ID)
     guild = client.get_guild(GUILD_ID)
+    async for entry in guild.audit_logs(limit=limit):
+        action = f'{entry.action}'
 
-    async for entry in guild.audit_logs(action=discord.AuditLogAction.ban):
-        message = f'{entry.user} banned {entry.target}'
+        if action == 'AuditLogAction.member_disconnect':
+            message = f'{entry.user} disconnected a user'
+        elif action == 'AuditLogAction.member_move':
+            message = f'{entry.user} moved a user'
+        elif action == 'AuditLogAction.unban':
+            message = f'{entry.user} unbanned {entry.target}'
+        elif action == 'AuditLogAction.ban':
+            message = f'{entry.user} banned {entry.target}'
+        elif entry.target is None:
+            message = f'{entry.user} did {action}'
+        else:
+            message = f'{entry.user} did {action} to {entry.target}'
+
         print(message)
         await channel.send(message)
 
-    async for entry in guild.audit_logs(action=discord.AuditLogAction.member_disconnect):
-        message = f'{entry.user} disconnected {entry.target}'
-        print(message)
-        await channel.send(message)
+async def printLastLog():
+    await printLog(1)
 
-    async for entry in guild.audit_logs(action=discord.AuditLogAction.kick):
-        message = f'{entry.user} kicked {entry.target}'
-        print(message)
-        await channel.send(message)
+@client.command()
+async def logs(ctx):
+    channel = client.get_channel(LOG_CHANNEL_ID)
 
-    async for entry in guild.audit_logs(action=discord.AuditLogAction.unban):
-        message = f'{entry.user} unbanned {entry.target}'
-        print(message)
-        await channel.send(message)
+    await channel.send('\n\n------------------------------------------------------------------------------')
+    await channel.send('Last 100 Logs:')
+    await channel.send('------------------------------------------------------------------------------')
 
-    async for entry in guild.audit_logs(action=discord.AuditLogAction.member_move):
-        message = f'{entry.user} moved {entry.target}'
-        print(message)
-        await channel.send(message)
+    await printLog(100)
 
-    await channel.send('I´m ready')
-
-
-# Command
-# @client.command()
-# async def helloworld(ctx):
-# await ctx.send('Hello World!')
+    await channel.send('------------------------------------------------------------------------------\n\n')
 
 
 client.run(DISCORD_TOKEN)
