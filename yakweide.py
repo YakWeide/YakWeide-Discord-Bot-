@@ -20,21 +20,26 @@ async def on_ready():
     await channel.send('I´m ready')
     print('I´m ready')
 
+
 @client.event
 async def on_member_ban(guild, user):
     await printLastLog()
+
 
 @client.event
 async def on_member_kick(guild, user):
     await printLastLog()
 
+
 @client.event
 async def on_member_join(member):
     await printLastLog()
 
+
 @client.event
 async def on_member_remove(member):
     await printLastLog()
+
 
 @client.event
 async def on_member_update(member):
