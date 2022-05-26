@@ -14,7 +14,7 @@ LOG_CHANNEL_ID = 979135868910592071
 previouslog = None
 previousmove = None
 previousdisconnect = None
-
+goodbyeActive = False
 # Create bot
 client = commands.Bot(command_prefix='!')
 
@@ -29,11 +29,25 @@ async def on_ready():
     print('I´m ready')
 
 
+@client.command()
+async def activate(ctx):
+    global goodbyeActive
+    goodbyeActive = True
+    return
+
+
+@client.command()
+async def deactivate(ctx):
+    global goodbyeActive
+    goodbyeActive = False
+    return
+
+
 @client.event
 async def on_voice_state_update(member, before, after):
     await checkLog(member=member)
     # if user leaves channel
-    if before.channel is not None and after.channel is None:
+    if before.channel is not None and after.channel is None and goodbyeActive:
         if member.id != client.user.id:
             voice = await before.channel.connect()
             voice.play(FFmpegPCMAudio("Ciaoooo.mp3"))
