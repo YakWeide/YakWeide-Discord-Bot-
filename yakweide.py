@@ -8,7 +8,7 @@ from discord import FFmpegPCMAudio
 # Credentials
 import yakweide
 
-DISCORD_TOKEN = 'Njc4MDEyOTMxMDg1OTU5MTk0.Gb3Vb9.Buy4uSdDUt2fSXGVOzDKogzefwmdNa1howeL24'
+DISCORD_TOKEN = ''
 GUILD_ID = 817139732026228767
 LOG_CHANNEL_ID = 979135868910592071
 previouslog = None
