@@ -36,7 +36,7 @@ async def on_voice_state_update(member, before, after):
     if before.channel is not None and after.channel is None:
         if member.id != client.user.id:
             voice = await before.channel.connect()
-            voice.play(FFmpegPCMAudio("quelle.mp3"))
+            voice.play(FFmpegPCMAudio("Ciaoooo.mp3"))
             while voice.is_playing():
                 sleep(1)
             await voice.disconnect()
