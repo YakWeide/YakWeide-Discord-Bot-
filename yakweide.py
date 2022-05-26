@@ -3,6 +3,7 @@ from time import sleep
 
 import discord
 from discord.ext import commands
+from discord import FFmpegPCMAudio
 
 # Credentials
 DISCORD_TOKEN = 'Njc4MDEyOTMxMDg1OTU5MTk0.Gb3Vb9.Buy4uSdDUt2fSXGVOzDKogzefwmdNa1howeL24'
@@ -22,22 +23,25 @@ async def on_ready():
     await channel.send('I´m ready')
     print('I´m ready')
 
+
 @client.event
 async def on_voice_state_update(member, before, after):
     # if user leaves channel
     if before.channel is not None and after.channel is None:
         if member.id != client.user.id:
-            await client.get_guild(GUILD_ID).change_voice_state(channel=before.channel)
-            print("DuHund")
-            sleep(5)
+            voice = await before.channel.connect()
+            voice.play(FFmpegPCMAudio("quelle.mp3"))
+            while voice.is_playing():
+                sleep(1)
+            await voice.disconnect()
 
-            await client.get_guild(GUILD_ID).change_voice_state(channel=None)
         else:
             print("Bot ist geleavet")
             return
     else:
         print("kein leaven")
         return
+
 
 @client.event
 async def on_member_ban(guild, user):
