@@ -46,22 +46,19 @@ async def deactivate(ctx):
 @client.event
 async def on_voice_state_update(member, before, after):
     await checkLog(member=member)
-    # if user leaves channel
+    # if user leaves channel bot joins, plays Ciaoooo.mp3 and leaves
     if before.channel is not None and after.channel is None and goodbyeActive:
         if member.id != client.user.id:
             voice = await before.channel.connect()
             voice.play(FFmpegPCMAudio("Ciaoooo.mp3"))
-            while voice.is_playing():
+            while voice.is_playing() and goodbyeActive:
                 sleep(1)
             await voice.disconnect()
 
         else:
-            print("Bot ist geleavet")
             return
     else:
-        print("kein leaven")
         return
-
 
 
 async def checkLog(member):
@@ -115,6 +112,7 @@ async def checkLog(member):
             return
         else:
             print("previousmove nein")
+
 
 async def printLog(entry, member):
     channel = client.get_channel(LOG_CHANNEL_ID)
