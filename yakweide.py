@@ -134,6 +134,8 @@ async def printLog(entry, member):
         message = f'{entry.user} banned {entry.target}'
     elif action == 'AuditLogAction.member_role_update':
         return
+    elif action == 'AuditLogAction.invite_create':
+        return
     elif entry.target is None:
         message = f'{entry.user} did {action}'
     else:
